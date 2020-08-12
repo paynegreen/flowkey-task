@@ -4,6 +4,7 @@ import Piano from "./Piano";
 import RecordButton from "./RecordButton";
 import SongList from "./SongList";
 import _ from "lodash";
+import StopButton from "./StopButton";
 
 const DEFAULT_NOTE_DURATION = 0.2;
 
@@ -64,6 +65,7 @@ function App() {
     const replaySong = () => {
         //clear out any playing track before playing new one
         //set the track & call this func in useEffect
+        if (events.length === 0) return;
         setMode("PLAYING");
 
         const playtime = _.uniq(_.flatMap(events, e => [e.time, sum(e.time, e.duration)]));
@@ -116,7 +118,13 @@ function App() {
                 mode={mode}
             />
             <hr />
-            <RecordButton onPress={beginRecording} />
+            <div>
+                {mode === "IDLE" ? (
+                    <RecordButton onPress={beginRecording} />
+                ) : (
+                    <StopButton onPress={stopReplay} />
+                )}
+            </div>
             <SongList songs={songs} replaySong={replaySong} />
         </div>
     );

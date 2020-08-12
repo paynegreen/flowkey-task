@@ -1,12 +1,12 @@
 import React from "react";
 import Button from "./Button";
 
-function RecordButton(props) {
+const StopButton = props => {
     return (
         <Button onClick={props.onPress}>
-            <span>Record</span>
+            <span>Stop</span>
         </Button>
     );
-}
+};
 
-export default RecordButton;
+export default StopButton;
