@@ -16,18 +16,26 @@ function App() {
         {
             _id: "somdsm454",
             title: "Beautiful Song",
+            events: [],
         },
         {
             _id: "somdsmfsd",
             title: "Beautiful Song",
+            events: [],
         },
     ]);
-    const [song, setSong] = useState({});
+    const [song, setSong] = useState({
+        _id: "some_id",
+        title: "Some title",
+        events: [],
+    });
     const [recordedNote, setRecordedNote] = useState(false);
     const [noteDuration, setNoteDuration] = useState(DEFAULT_NOTE_DURATION);
 
     const beginRecording = () => {
         setMode("RECORDING");
+        setEvents([]);
+        setCurrentTime(0);
     };
 
     const recordNotes = (midiNumbers, duration) => {
@@ -45,9 +53,46 @@ function App() {
         setCurrentTime(currentTime + duration);
     };
 
-    useEffect(() => {
-        console.log(events);
-    }, [events]);
+    const sum = (a, b) => a + b;
+
+    const getPlayEndTime = () => {
+        if (events.length < 1) return 0;
+
+        return Math.max(...events.map(e => sum(e.time, e.duration))) * 1000;
+    };
+
+    const replaySong = () => {
+        //clear out any playing track before playing new one
+        //set the track & call this func in useEffect
+        setMode("PLAYING");
+
+        const playtime = _.uniq(_.flatMap(events, e => [e.time, sum(e.time, e.duration)]));
+
+        _.each(playtime, t => {
+            setTimeout(() => {
+                //use song events here
+                const newEvents = events.filter(e => {
+                    return e.time <= t && e.time + e.duration > t;
+                });
+                setCurrentEvents(newEvents);
+            }, t * 1000);
+        });
+
+        setTimeout(() => {
+            stopReplay();
+        }, getPlayEndTime());
+    };
+
+    const stopReplay = () => {
+        setMode("IDLE");
+        setCurrentEvents([]);
+    };
+
+    // useEffect(() => {
+    //     console.log(events);
+    // }, [events]);
+
+    const activeNotes = mode === "PLAYING" ? currentEvents.map(event => event.midiNumber) : null;
 
     const onPlayNoteInput = midiNumber => {
         setRecordedNote(false);
@@ -64,10 +109,15 @@ function App() {
     return (
         <div className="App">
             <h1>React Piano Task</h1>
-            <Piano onPlayNoteInput={onPlayNoteInput} onStopNoteInput={onStopNoteInput} />
+            <Piano
+                onPlayNoteInput={onPlayNoteInput}
+                onStopNoteInput={onStopNoteInput}
+                activeNotes={activeNotes}
+                mode={mode}
+            />
             <hr />
             <RecordButton onPress={beginRecording} />
-            <SongList songs={songs} />
+            <SongList songs={songs} replaySong={replaySong} />
         </div>
     );
 }
