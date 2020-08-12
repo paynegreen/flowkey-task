@@ -3,3 +3,17 @@
   align-items: center;
   flex-direction: column;
 }
+
+.Container {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 1em;
+}
+
+.PlayButton {
+  background-color: orange;
+}
+
+.Label {
+  padding-left: 0.5em;
+}

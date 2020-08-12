@@ -16,7 +16,7 @@ const keyboardShortcuts = KeyboardShortcuts.create({
     keyboardConfig: KeyboardShortcuts.HOME_ROW,
 });
 
-function Piano() {
+function Piano(props) {
     return (
         <SoundfontProvider
             instrumentName="acoustic_grand_piano"
@@ -31,6 +31,9 @@ function Piano() {
                         stopNote={stopNote}
                         width={1000}
                         keyboardShortcuts={keyboardShortcuts}
+                        // activeNotes={getActiveNotes}
+                        onPlayNoteInput={props.onPlayNoteInput}
+                        onStopNoteInput={props.onStopNoteInput}
                     />
                 </div>
             )}
