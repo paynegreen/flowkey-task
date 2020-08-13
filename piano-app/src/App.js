@@ -51,7 +51,6 @@ function App() {
     };
 
     const replaySong = song => {
-        //clear out any playing track before playing new one
         if (mode !== "IDLE")
             return alert("Please complete the recording before proceeding with replays");
 
@@ -74,9 +73,6 @@ function App() {
     };
 
     const stopReplay = () => {
-        console.log(events);
-        console.log(events.length);
-        console.log(mode === "RECORDING" && events.length);
         if (mode === "RECORDING" && events.length) {
             saveSong();
         }
