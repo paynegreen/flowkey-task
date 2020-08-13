@@ -13,23 +13,7 @@ function App() {
     const [currentTime, setCurrentTime] = useState(0);
     const [events, setEvents] = useState([]);
     const [currentEvents, setCurrentEvents] = useState([]);
-    const [songs, setSongs] = useState([
-        {
-            _id: "somdsm454",
-            title: "Beautiful Song",
-            events: [],
-        },
-        {
-            _id: "somdsmfsd",
-            title: "Beautiful Song",
-            events: [],
-        },
-    ]);
-    const [song, setSong] = useState({
-        _id: "some_id",
-        title: "Some title",
-        events: [],
-    });
+    const [songs, setSongs] = useState([]);
     const [recordedNote, setRecordedNote] = useState(false);
     const [noteDuration, setNoteDuration] = useState(DEFAULT_NOTE_DURATION);
 
@@ -62,18 +46,16 @@ function App() {
         return Math.max(...events.map(e => sum(e.time, e.duration))) * 1000;
     };
 
-    const replaySong = () => {
+    const replaySong = song => {
         //clear out any playing track before playing new one
         //set the track & call this func in useEffect
-        if (events.length === 0) return;
         setMode("PLAYING");
 
         const playtime = _.uniq(_.flatMap(events, e => [e.time, sum(e.time, e.duration)]));
 
         _.each(playtime, t => {
             setTimeout(() => {
-                //use song events here
-                const newEvents = events.filter(e => {
+                const newEvents = song.keyStrokes.filter(e => {
                     return e.time <= t && e.time + e.duration > t;
                 });
                 setCurrentEvents(newEvents);
@@ -86,13 +68,12 @@ function App() {
     };
 
     const stopReplay = () => {
-        setMode("IDLE");
+        if (mode === "RECORDING") {
+            storeSong();
+        }
         setCurrentEvents([]);
+        setMode("IDLE");
     };
-
-    // useEffect(() => {
-    //     console.log(events);
-    // }, [events]);
 
     const activeNotes = mode === "PLAYING" ? currentEvents.map(event => event.midiNumber) : null;
 
@@ -106,6 +87,17 @@ function App() {
             setRecordedNote(true);
             setNoteDuration(DEFAULT_NOTE_DURATION);
         }
+    };
+
+    const storeSong = () => {
+        const response = prompt("What's the title of your song:");
+
+        const newSong = {
+            title: _.upperFirst(response),
+            keyStrokes: events,
+        };
+
+        setSongs(_.concat(songs, newSong));
     };
 
     return (
