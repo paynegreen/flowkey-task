@@ -17,10 +17,14 @@ function App() {
     const [recordedNote, setRecordedNote] = useState(false);
     const [noteDuration, setNoteDuration] = useState(DEFAULT_NOTE_DURATION);
 
-    const beginRecording = () => {
-        setMode("RECORDING");
+    const resetEvents = () => {
         setEvents([]);
         setCurrentTime(0);
+    };
+
+    const beginRecording = () => {
+        setMode("RECORDING");
+        resetEvents();
     };
 
     const recordNotes = (midiNumbers, duration) => {
@@ -48,7 +52,9 @@ function App() {
 
     const replaySong = song => {
         //clear out any playing track before playing new one
-        //set the track & call this func in useEffect
+        if (mode !== "IDLE")
+            return alert("Please complete the recording before proceeding with replays");
+
         setMode("PLAYING");
 
         const playtime = _.uniq(_.flatMap(events, e => [e.time, sum(e.time, e.duration)]));
@@ -68,8 +74,11 @@ function App() {
     };
 
     const stopReplay = () => {
-        if (mode === "RECORDING") {
-            storeSong();
+        console.log(events);
+        console.log(events.length);
+        console.log(mode === "RECORDING" && events.length);
+        if (mode === "RECORDING" && events.length) {
+            saveSong();
         }
         setCurrentEvents([]);
         setMode("IDLE");
@@ -89,7 +98,7 @@ function App() {
         }
     };
 
-    const storeSong = () => {
+    const saveSong = () => {
         const response = prompt("What's the title of your song:");
 
         const newSong = {
@@ -111,6 +120,7 @@ function App() {
             />
             <hr />
             <div>
+                <p>Current Mode: {mode}</p>
                 {mode === "IDLE" ? (
                     <RecordButton onPress={beginRecording} />
                 ) : (
