@@ -7,19 +7,20 @@ import { FaPlay } from "react-icons/fa";
 function Song(props) {
     const { replaySong, song, mode } = props;
     return (
-        <tr>
-            <td>
+        <>
+            <div>
                 <Button
+                    size="sm"
                     disabled={mode !== "IDLE"}
                     onClick={() => replaySong(song)}
                     className="mr-4"
                 >
-                    <FaPlay />
+                    <FaPlay size={15} />
                 </Button>
                 {song.title}
-            </td>
-            <td>{formatTime(song.elapseTime / 1000)}</td>
-        </tr>
+            </div>
+            <div>{formatTime(song.elapseTime / 1000)}</div>
+        </>
     );
 }
 

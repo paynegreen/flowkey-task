@@ -3,3 +3,9 @@
   align-items: center;
   flex-direction: column;
 }
+
+.SongContainer {
+  display: flex;
+  width: 30%;
+  justify-content: space-between;
+}

@@ -4,7 +4,7 @@ import { gql } from "apollo-boost";
 import { Table } from "reactstrap";
 import Song from "../components/Song";
 
-const GET_SONGS = gql`
+export const GET_SONGS = gql`
     {
         songs {
             _id
@@ -31,19 +31,11 @@ const SongList = props => {
                         return <p>No songs played yet. Save your first song</p>;
 
                     return (
-                        <Table borderless>
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Length</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {data.songs.map(v => (
-                                    <Song song={v} key={v._id} {...props} />
-                                ))}
-                            </tbody>
-                        </Table>
+                        <div className="SongContainer">
+                            {data.songs.map(v => (
+                                <Song song={v} key={v._id} {...props} />
+                            ))}
+                        </div>
                     );
                 }}
             </Query>
