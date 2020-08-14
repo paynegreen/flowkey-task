@@ -47,12 +47,6 @@ function App() {
         setCurrentTime(currentTime);
     };
 
-    const getPlayEndTime = eventNotes => {
-        if (eventNotes.length < 1) return 0;
-
-        return Math.max(...eventNotes.map(e => e.time + e.duration));
-    };
-
     const replaySong = song => {
         if (mode !== "IDLE")
             return alert("Please complete the recording before proceeding with replays");
@@ -73,7 +67,7 @@ function App() {
 
         setTimeout(() => {
             stopReplay();
-        }, getPlayEndTime(song.keyStrokes));
+        }, song.elapseTime);
     };
 
     const stopReplay = () => {
@@ -89,11 +83,11 @@ function App() {
 
     const activeNotes = mode === "PLAYING" ? currentEvents.map(event => event.midiNumber) : null;
 
-    const onPlayNoteInput = midiNumber => {
+    const onPlayNoteInput = _ => {
         setRecordedNote(false);
     };
 
-    const onStopNoteInput = (midiNumber, { prevActiveNotes }) => {
+    const onStopNoteInput = (_, { prevActiveNotes }) => {
         if (!recordedNote) {
             recordNotes(prevActiveNotes, noteDuration);
             setRecordedNote(true);
