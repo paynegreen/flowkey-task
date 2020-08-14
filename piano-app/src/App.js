@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import Piano from "./Piano";
 import RecordButton from "./RecordButton";
@@ -6,25 +7,25 @@ import SongList from "./SongList";
 import _ from "lodash";
 import StopButton from "./StopButton";
 import Timer from "./Timer";
+import SaveSongModal from "./containers/SaveSongModal";
 
 const DURATION_UNIT = 200;
 const DEFAULT_NOTE_DURATION = DURATION_UNIT;
 
 function App() {
     const [mode, setMode] = useState("IDLE");
-    const [currentTime, setCurrentTime] = useState(0);
     const [events, setEvents] = useState([]);
     const [currentEvents, setCurrentEvents] = useState([]);
-    const [songs, setSongs] = useState([]);
+    const [song, setSong] = useState(null);
     const [recordedNote, setRecordedNote] = useState(false);
     const [noteDuration, setNoteDuration] = useState(DEFAULT_NOTE_DURATION);
     const [seconds, setSeconds] = useState(0);
+    const [modal, setModal] = useState(false);
 
     let scheduleEvents = [];
 
     const resetEvents = () => {
         setEvents([]);
-        setCurrentTime(0);
     };
 
     const beginRecording = () => {
@@ -44,7 +45,6 @@ function App() {
         });
 
         setEvents(_.concat(events, newEvents));
-        setCurrentTime(currentTime);
     };
 
     const replaySong = song => {
@@ -96,18 +96,12 @@ function App() {
     };
 
     const saveSong = () => {
-        const response = prompt("What's the title of your song:");
-
-        const newSong = {
-            title: _.upperFirst(response),
-            keyStrokes: events,
-            elapseTime: seconds,
-        };
-
-        setSongs(songs => [...songs, newSong]);
+        setSong({
+            events,
+            seconds,
+        });
+        setModal(modal => !modal);
     };
-
-    // useEffect(() => {}, [timer]);
 
     return (
         <div className="App">
@@ -128,7 +122,8 @@ function App() {
                 )}
                 <Timer seconds={seconds} setSeconds={setSeconds} mode={mode} />
             </div>
-            <SongList songs={songs} replaySong={replaySong} />
+            <SongList replaySong={replaySong} />
+            <SaveSongModal modal={modal} setModal={setModal} song={song} />
         </div>
     );
 }

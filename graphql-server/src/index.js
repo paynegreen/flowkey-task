@@ -31,7 +31,7 @@ const typeDefs = gql`
     }
 
     type Mutation {
-        addSong(title: String, keyStrokes: [NoteInput!], elapseTime: Int): Song
+        addSong(title: String, keyStrokes: [NoteInput!], elapseTime: Int!): Song
     }
 `;
 

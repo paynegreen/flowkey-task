@@ -1,15 +1,39 @@
 import React from "react";
 import Song from "./Song";
+import { Query } from "react-apollo";
+import { gql } from "apollo-boost";
 
-//TODO: replace key with _id from obj
-function SongList(props) {
-    const { songs, replaySong } = props;
+const GET_SONGS = gql`
+    {
+        songs {
+            _id
+            title
+            keyStrokes {
+                midiNumber
+                time
+                duration
+            }
+            elapseTime
+        }
+    }
+`;
+
+const SongList = props => {
+    const { replaySong } = props;
+
     return (
-        <div>
+        <>
             <p>My Songs</p>
-            {songs.length > 0 && songs.map((v, i) => <Song song={v} key={i} play={replaySong} />)}
-        </div>
+            <Query query={GET_SONGS} pollInterval={500}>
+                {({ loading, error, data }) => {
+                    if (loading) return <p>Loading...</p>;
+                    if (error) return <p>Error :(</p>;
+
+                    return data.songs.map(v => <Song song={v} key={v._id} play={replaySong} />);
+                }}
+            </Query>
+        </>
     );
-}
+};
 
 export default SongList;
