@@ -47,8 +47,6 @@ const resolvers = {
     },
     Mutation: {
         addSong: async (_, { title, keyStrokes, elapseTime }) => {
-            console.log('-------')
-            console.log(keyStrokes)
             const mongodb = await getMongoConnection();
             const newSong = { title, keyStrokes, elapseTime };
             const response = await mongodb.collection("songs").insertOne(newSong);
