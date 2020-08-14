@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import Piano from "./Piano";
-import RecordButton from "./RecordButton";
 import SongList from "./SongList";
 import _ from "lodash";
-import StopButton from "./StopButton";
-import Timer from "./Timer";
 import SaveSongModal from "./containers/SaveSongModal";
+import { Container } from "reactstrap";
+import RecordSection from "./containers/RecordSection";
 
 const DURATION_UNIT = 200;
 const DEFAULT_NOTE_DURATION = DURATION_UNIT;
@@ -48,9 +47,6 @@ function App() {
     };
 
     const replaySong = song => {
-        if (mode !== "IDLE")
-            return alert("Please complete the recording before proceeding with replays");
-
         setMode("PLAYING");
 
         const playtime = _.uniq(_.flatMap(song.keyStrokes, e => [e.time, e.time + e.duration]));
@@ -71,6 +67,17 @@ function App() {
     };
 
     const stopReplay = () => {
+        if (mode === "RECORDING" && events.length > 0) {
+            saveSong();
+        }
+        setCurrentEvents([]);
+        setMode("IDLE");
+
+        _.each(scheduleEvents, v => clearInterval(v));
+        scheduleEvents = [];
+    };
+
+    const stopRecording = () => {
         if (mode === "RECORDING" && events.length > 0) {
             saveSong();
         }
@@ -110,20 +117,20 @@ function App() {
                 onPlayNoteInput={onPlayNoteInput}
                 onStopNoteInput={onStopNoteInput}
                 activeNotes={activeNotes}
-                mode={mode}
+                typing={modal}
             />
-            <hr />
-            <div>
-                <p>Current Mode: {mode}</p>
-                {mode === "IDLE" ? (
-                    <RecordButton onPress={beginRecording} />
-                ) : (
-                    <StopButton onPress={stopReplay} />
-                )}
-                <Timer seconds={seconds} setSeconds={setSeconds} mode={mode} />
-            </div>
-            <SongList replaySong={replaySong} />
-            <SaveSongModal modal={modal} setModal={setModal} song={song} />
+            <Container className="d-flex flex-column align-items-center my-5">
+                <RecordSection
+                    mode={mode}
+                    setMode={setMode}
+                    onRecordClick={beginRecording}
+                    onStopClick={stopRecording}
+                    seconds={seconds}
+                    setSeconds={setSeconds}
+                />
+                <SongList replaySong={replaySong} mode={mode} />
+                <SaveSongModal modal={modal} setModal={setModal} song={song} />
+            </Container>
         </div>
     );
 }

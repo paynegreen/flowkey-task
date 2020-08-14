@@ -1,15 +1,25 @@
 import React from "react";
-import Button from "./Button";
+import { Button } from "reactstrap";
+import formatTime from "./utils/formatTime";
+import { FaPlay } from "react-icons/fa";
 
 function Song(props) {
-    const { play, song } = props;
+    const { replaySong, song, mode } = props;
     return (
-        <div className="Container">
-            <Button onClick={() => play(song)}>
-                <span>Play</span>
-            </Button>
-            <span className="Label">{song.title}</span>
-        </div>
+        <tr>
+            <td></td>
+            <td>
+                <Button
+                    disabled={mode !== "IDLE"}
+                    onClick={() => replaySong(song)}
+                    className="mr-4"
+                >
+                    <FaPlay />
+                </Button>
+                {song.title}
+            </td>
+            <td>{formatTime(song.elapseTime / 1000)}</td>
+        </tr>
     );
 }
 

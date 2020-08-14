@@ -17,7 +17,7 @@ const keyboardShortcuts = KeyboardShortcuts.create({
 });
 
 function Piano(props) {
-    const { activeNotes, onPlayNoteInput, onStopNoteInput } = props;
+    const { activeNotes, onPlayNoteInput, onStopNoteInput, typing } = props;
 
     return (
         <SoundfontProvider
@@ -27,7 +27,7 @@ function Piano(props) {
             render={({ isLoading, playNote, stopNote }) => (
                 <div>
                     <ReactPiano
-                        disabled={isLoading}
+                        disabled={isLoading || typing}
                         noteRange={noteRange}
                         playNote={playNote}
                         stopNote={stopNote}
