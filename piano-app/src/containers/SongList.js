@@ -23,24 +23,30 @@ const SongList = props => {
     return (
         <>
             <h3>My Songs</h3>
-            <Table borderless>
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Length</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <Query query={GET_SONGS} pollInterval={500}>
-                        {({ loading, error, data }) => {
-                            if (loading) return null;
-                            if (error) return null;
+            <Query query={GET_SONGS} pollInterval={500}>
+                {({ loading, error, data }) => {
+                    if (loading) return <p>loading ...</p>;
+                    if (error) return <p>An error occurred</p>;
+                    if (data.songs.length === 0)
+                        return <p>No songs played yet. Save your first song</p>;
 
-                            return data.songs.map(v => <Song song={v} key={v._id} {...props} />);
-                        }}
-                    </Query>
-                </tbody>
-            </Table>
+                    return (
+                        <Table borderless>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Length</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {data.songs.map(v => (
+                                    <Song song={v} key={v._id} {...props} />
+                                ))}
+                            </tbody>
+                        </Table>
+                    );
+                }}
+            </Query>
         </>
     );
 };
