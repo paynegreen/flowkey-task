@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-// import TextInput from "../../components/TextInput";
-// import Button from "../../Button";
 import { Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Input } from "reactstrap";
 import { Mutation } from "react-apollo";
 import { gql } from "apollo-boost";
