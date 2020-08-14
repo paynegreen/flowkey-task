@@ -19,7 +19,6 @@ function App() {
     const [recordedNote, setRecordedNote] = useState(false);
     const [noteDuration, setNoteDuration] = useState(DEFAULT_NOTE_DURATION);
     const [seconds, setSeconds] = useState(0);
-    const [rawSeconds, setRawSeconds] = useState(0);
 
     let scheduleEvents = [];
 
@@ -39,7 +38,7 @@ function App() {
         const newEvents = midiNumbers.map(midiNumber => {
             return {
                 midiNumber,
-                time: rawSeconds,
+                time: seconds,
                 duration: duration,
             };
         });
@@ -109,7 +108,6 @@ function App() {
             title: _.upperFirst(response),
             keyStrokes: events,
             elapseTime: seconds,
-            rawElapseTime: rawSeconds,
         };
 
         setSongs(songs => [...songs, newSong]);
@@ -134,12 +132,7 @@ function App() {
                 ) : (
                     <StopButton onPress={stopReplay} />
                 )}
-                <Timer
-                    seconds={seconds}
-                    setSeconds={setSeconds}
-                    mode={mode}
-                    setRawSeconds={setRawSeconds}
-                />
+                <Timer seconds={seconds} setSeconds={setSeconds} mode={mode} />
             </div>
             <SongList songs={songs} replaySong={replaySong} />
         </div>

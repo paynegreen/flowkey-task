@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import formatTime from "./utils/formatTime";
 
 const Timer = props => {
-    const { seconds, setSeconds, mode, setRawSeconds } = props;
+    const { seconds, setSeconds, mode } = props;
     const [timeInterval, setTimeInterval] = useState(null);
 
     const startTimer = function() {
@@ -11,18 +11,7 @@ const Timer = props => {
             setInterval(() => {
                 i += 10;
 
-                if (i % 1000 === 0) {
-                    setSeconds(i / 1000);
-                    // console.log("-----");
-                    // console.log(i);
-                }
-                // this.time += 10;
-                // if (this.time % 1000 === 0) {
-                //     // Every second increment the time for the recording timer
-                //     this.onTimeChange(this.time / 1000);
-                // }
-                // setSeconds(seconds => seconds + 1);
-                setRawSeconds(i);
+                setSeconds(i);
             }, 10)
         );
     };
@@ -38,7 +27,7 @@ const Timer = props => {
         return stopTimer();
     }, [mode]);
 
-    return <div className="Timer">{formatTime(seconds)}</div>;
+    return <div className="Timer">{formatTime(seconds / 1000)}</div>;
 };
 
 export default Timer;
