@@ -6,9 +6,8 @@ import SongList from "./SongList";
 import _ from "lodash";
 import StopButton from "./StopButton";
 import Timer from "./Timer";
-import Timing from "./utils/timing";
 
-const DURATION_UNIT = 0.2;
+const DURATION_UNIT = 200;
 const DEFAULT_NOTE_DURATION = DURATION_UNIT;
 
 function App() {
@@ -19,8 +18,10 @@ function App() {
     const [songs, setSongs] = useState([]);
     const [recordedNote, setRecordedNote] = useState(false);
     const [noteDuration, setNoteDuration] = useState(DEFAULT_NOTE_DURATION);
-    const [timer, setTimer] = useState(0);
     const [seconds, setSeconds] = useState(0);
+    const [rawSeconds, setRawSeconds] = useState(0);
+
+    let scheduleEvents;
 
     const resetEvents = () => {
         setEvents([]);
@@ -38,7 +39,7 @@ function App() {
         const newEvents = midiNumbers.map(midiNumber => {
             return {
                 midiNumber,
-                time: currentTime,
+                time: rawSeconds,
                 duration: duration,
             };
         });
@@ -47,12 +48,11 @@ function App() {
         setCurrentTime(currentTime + duration);
     };
 
-    const sum = (a, b) => a + b;
-
     const getPlayEndTime = () => {
         if (events.length < 1) return 0;
 
-        return Math.max(...events.map(e => sum(e.time, e.duration))) * 1000;
+        // return Math.max(...events.map(e => e.time + e.duration)) * 1000;
+        return Math.max(...events.map(e => e.time + e.duration));
     };
 
     const replaySong = song => {
@@ -61,16 +61,20 @@ function App() {
 
         setMode("PLAYING");
 
-        const playtime = _.uniq(_.flatMap(events, e => [e.time, sum(e.time, e.duration)]));
+        const playtime = _.uniq(_.flatMap(events, e => [e.time, e.time + e.duration]));
+        console.log("-----playtime");
+        console.log(playtime);
 
-        _.each(playtime, t => {
-            //TODO: push the setTimeout in array so you can clear it
-            setTimeout(() => {
+        scheduleEvents = _.map(playtime, t => {
+            return setTimeout(() => {
                 const newEvents = song.keyStrokes.filter(e => {
                     return e.time <= t && e.time + e.duration > t;
                 });
+                console.log("------");
+                console.log(newEvents);
+                console.log("------");
                 setCurrentEvents(newEvents);
-            }, t * 1000);
+            }, t);
         });
 
         setTimeout(() => {
@@ -84,9 +88,8 @@ function App() {
         }
         setCurrentEvents([]);
         setMode("IDLE");
-        setSeconds(0);
 
-        //TODO: clear all setTimeout
+        _.each(scheduleEvents, v => clearInterval(v));
     };
 
     const activeNotes = mode === "PLAYING" ? currentEvents.map(event => event.midiNumber) : null;
@@ -109,12 +112,18 @@ function App() {
         const newSong = {
             title: _.upperFirst(response),
             keyStrokes: events,
+            elapseTime: seconds,
+            rawElapseTime: rawSeconds,
         };
 
-        setSongs(_.concat(songs, newSong));
+        console.log("**********");
+        console.log(newSong);
+        console.log("**********");
+
+        setSongs(songs => [...songs, newSong]);
     };
 
-    useEffect(() => {}, [timer]);
+    // useEffect(() => {}, [timer]);
 
     return (
         <div className="App">
@@ -133,7 +142,12 @@ function App() {
                 ) : (
                     <StopButton onPress={stopReplay} />
                 )}
-                <Timer seconds={seconds} setSeconds={setSeconds} mode={mode} />
+                <Timer
+                    seconds={seconds}
+                    setSeconds={setSeconds}
+                    mode={mode}
+                    setRawSeconds={setRawSeconds}
+                />
             </div>
             <SongList songs={songs} replaySong={replaySong} />
         </div>
