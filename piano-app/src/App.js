@@ -5,8 +5,11 @@ import RecordButton from "./RecordButton";
 import SongList from "./SongList";
 import _ from "lodash";
 import StopButton from "./StopButton";
+import Timer from "./Timer";
+import Timing from "./utils/timing";
 
-const DEFAULT_NOTE_DURATION = 0.2;
+const DURATION_UNIT = 0.2;
+const DEFAULT_NOTE_DURATION = DURATION_UNIT;
 
 function App() {
     const [mode, setMode] = useState("IDLE");
@@ -16,6 +19,8 @@ function App() {
     const [songs, setSongs] = useState([]);
     const [recordedNote, setRecordedNote] = useState(false);
     const [noteDuration, setNoteDuration] = useState(DEFAULT_NOTE_DURATION);
+    const [timer, setTimer] = useState(0);
+    const [seconds, setSeconds] = useState(0);
 
     const resetEvents = () => {
         setEvents([]);
@@ -59,6 +64,7 @@ function App() {
         const playtime = _.uniq(_.flatMap(events, e => [e.time, sum(e.time, e.duration)]));
 
         _.each(playtime, t => {
+            //TODO: push the setTimeout in array so you can clear it
             setTimeout(() => {
                 const newEvents = song.keyStrokes.filter(e => {
                     return e.time <= t && e.time + e.duration > t;
@@ -73,11 +79,14 @@ function App() {
     };
 
     const stopReplay = () => {
-        if (mode === "RECORDING" && events.length) {
+        if (mode === "RECORDING" && events.length > 0) {
             saveSong();
         }
         setCurrentEvents([]);
         setMode("IDLE");
+        setSeconds(0);
+
+        //TODO: clear all setTimeout
     };
 
     const activeNotes = mode === "PLAYING" ? currentEvents.map(event => event.midiNumber) : null;
@@ -105,6 +114,8 @@ function App() {
         setSongs(_.concat(songs, newSong));
     };
 
+    useEffect(() => {}, [timer]);
+
     return (
         <div className="App">
             <h1>React Piano Task</h1>
@@ -122,6 +133,7 @@ function App() {
                 ) : (
                     <StopButton onPress={stopReplay} />
                 )}
+                <Timer seconds={seconds} setSeconds={setSeconds} mode={mode} />
             </div>
             <SongList songs={songs} replaySong={replaySong} />
         </div>
