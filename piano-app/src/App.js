@@ -21,7 +21,7 @@ function App() {
     const [seconds, setSeconds] = useState(0);
     const [rawSeconds, setRawSeconds] = useState(0);
 
-    let scheduleEvents;
+    let scheduleEvents = [];
 
     const resetEvents = () => {
         setEvents([]);
@@ -45,14 +45,13 @@ function App() {
         });
 
         setEvents(_.concat(events, newEvents));
-        setCurrentTime(currentTime + duration);
+        setCurrentTime(currentTime);
     };
 
-    const getPlayEndTime = () => {
-        if (events.length < 1) return 0;
+    const getPlayEndTime = eventNotes => {
+        if (eventNotes.length < 1) return 0;
 
-        // return Math.max(...events.map(e => e.time + e.duration)) * 1000;
-        return Math.max(...events.map(e => e.time + e.duration));
+        return Math.max(...eventNotes.map(e => e.time + e.duration));
     };
 
     const replaySong = song => {
@@ -61,25 +60,21 @@ function App() {
 
         setMode("PLAYING");
 
-        const playtime = _.uniq(_.flatMap(events, e => [e.time, e.time + e.duration]));
-        console.log("-----playtime");
-        console.log(playtime);
+        const playtime = _.uniq(_.flatMap(song.keyStrokes, e => [e.time, e.time + e.duration]));
 
-        scheduleEvents = _.map(playtime, t => {
-            return setTimeout(() => {
+        scheduleEvents = _.each(playtime, t => {
+            setTimeout(() => {
                 const newEvents = song.keyStrokes.filter(e => {
                     return e.time <= t && e.time + e.duration > t;
                 });
-                console.log("------");
-                console.log(newEvents);
-                console.log("------");
+
                 setCurrentEvents(newEvents);
             }, t);
         });
 
         setTimeout(() => {
             stopReplay();
-        }, getPlayEndTime());
+        }, getPlayEndTime(song.keyStrokes));
     };
 
     const stopReplay = () => {
@@ -90,6 +85,7 @@ function App() {
         setMode("IDLE");
 
         _.each(scheduleEvents, v => clearInterval(v));
+        scheduleEvents = [];
     };
 
     const activeNotes = mode === "PLAYING" ? currentEvents.map(event => event.midiNumber) : null;
@@ -115,10 +111,6 @@ function App() {
             elapseTime: seconds,
             rawElapseTime: rawSeconds,
         };
-
-        console.log("**********");
-        console.log(newSong);
-        console.log("**********");
 
         setSongs(songs => [...songs, newSong]);
     };
