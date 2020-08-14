@@ -7,5 +7,6 @@
 .SongContainer {
   display: flex;
   width: 30%;
+  flex-direction: column;
   justify-content: space-between;
 }

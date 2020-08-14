@@ -7,7 +7,7 @@ import { FaPlay } from "react-icons/fa";
 function Song(props) {
     const { replaySong, song, mode } = props;
     return (
-        <>
+        <div className="d-flex align-items-center my-2 justify-content-between">
             <div>
                 <Button
                     size="sm"
@@ -20,7 +20,7 @@ function Song(props) {
                 {song.title}
             </div>
             <div>{formatTime(song.elapseTime / 1000)}</div>
-        </>
+        </div>
     );
 }
 
