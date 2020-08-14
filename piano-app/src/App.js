@@ -14,9 +14,8 @@ function App() {
     const [mode, setMode] = useState("IDLE");
     const [events, setEvents] = useState([]);
     const [currentEvents, setCurrentEvents] = useState([]);
-    const [song, setSong] = useState(null);
+    const [song, setSong] = useState({});
     const [recordedNote, setRecordedNote] = useState(false);
-    const [noteDuration, setNoteDuration] = useState(DEFAULT_NOTE_DURATION);
     const [seconds, setSeconds] = useState(0);
     const [modal, setModal] = useState(false);
 
@@ -29,6 +28,14 @@ function App() {
     const beginRecording = () => {
         setMode("RECORDING");
         resetEvents();
+    };
+
+    const saveSong = () => {
+        setSong({
+            events,
+            seconds,
+        });
+        setModal(modal => !modal);
     };
 
     const recordNotes = (midiNumbers, duration) => {
@@ -95,18 +102,9 @@ function App() {
 
     const onStopNoteInput = (_, { prevActiveNotes }) => {
         if (!recordedNote) {
-            recordNotes(prevActiveNotes, noteDuration);
+            recordNotes(prevActiveNotes, DEFAULT_NOTE_DURATION);
             setRecordedNote(true);
-            setNoteDuration(DEFAULT_NOTE_DURATION);
         }
-    };
-
-    const saveSong = () => {
-        setSong({
-            events,
-            seconds,
-        });
-        setModal(modal => !modal);
     };
 
     return (

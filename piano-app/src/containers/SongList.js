@@ -26,7 +26,7 @@ const SongList = props => {
             <Query query={GET_SONGS} pollInterval={500}>
                 {({ loading, error, data }) => {
                     if (loading) return <p>loading ...</p>;
-                    if (error) return <p>An error occurred</p>;
+                    if (error) return <p>An error occurred: {error}</p>;
                     if (data.songs.length === 0)
                         return <p>No songs played yet. Save your first song</p>;
 

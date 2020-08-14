@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
+
 import { Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Input } from "reactstrap";
 import { Mutation } from "react-apollo";
 import { gql } from "apollo-boost";
@@ -66,6 +68,12 @@ const SaveSongModal = props => {
             </Modal>
         </div>
     );
+};
+
+SaveSongModal.propTypes = {
+    song: PropTypes.object.isRequired,
+    modal: PropTypes.bool.isRequired,
+    setModal: PropTypes.func.isRequired,
 };
 
 export default SaveSongModal;

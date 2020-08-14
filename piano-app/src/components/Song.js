@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Button } from "reactstrap";
 import formatTime from "../utils/formatTime";
 import { FaPlay } from "react-icons/fa";
@@ -21,5 +22,11 @@ function Song(props) {
         </tr>
     );
 }
+
+Song.propTypes = {
+    replaySong: PropTypes.func.isRequired,
+    song: PropTypes.object.isRequired,
+    mode: PropTypes.string.isRequired,
+};
 
 export default Song;

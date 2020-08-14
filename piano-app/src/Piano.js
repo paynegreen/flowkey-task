@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Piano as ReactPiano, KeyboardShortcuts, MidiNumbers } from "react-piano";
 import SoundfontProvider from "./SoundfontProvider";
 import "react-piano/dist/styles.css";
@@ -42,5 +43,12 @@ function Piano(props) {
         />
     );
 }
+
+Piano.propTypes = {
+    activeNotes: PropTypes.array,
+    onPlayNoteInput: PropTypes.func.isRequired,
+    onStopNoteInput: PropTypes.func.isRequired,
+    typing: PropTypes.bool.isRequired,
+};
 
 export default Piano;

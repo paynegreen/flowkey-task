@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import formatTime from "../utils/formatTime";
 
 const Timer = props => {
@@ -28,6 +29,12 @@ const Timer = props => {
     }, [mode]);
 
     return <div className="Timer">{formatTime(seconds / 1000)}</div>;
+};
+
+Timer.propTypes = {
+    seconds: PropTypes.number.isRequired,
+    setSeconds: PropTypes.func.isRequired,
+    mode: PropTypes.string.isRequired,
 };
 
 export default Timer;

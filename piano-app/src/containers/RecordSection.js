@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { ButtonToggle } from "reactstrap";
 import { FaDotCircle, FaStop } from "react-icons/fa";
 import Timer from "./Timer";
@@ -36,6 +37,14 @@ const RecordSection = props => {
             </div>
         </>
     );
+};
+
+RecordSection.propTypes = {
+    mode: PropTypes.string.isRequired,
+    onStopClick: PropTypes.func.isRequired,
+    onRecordClick: PropTypes.func.isRequired,
+    seconds: PropTypes.number.isRequired,
+    setSeconds: PropTypes.func.isRequired,
 };
 
 export default RecordSection;
