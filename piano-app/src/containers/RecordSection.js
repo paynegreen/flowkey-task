@@ -1,7 +1,7 @@
 import React from "react";
 import { ButtonToggle } from "reactstrap";
 import { FaDotCircle, FaStop } from "react-icons/fa";
-import Timer from "../Timer";
+import Timer from "./Timer";
 
 const RecordSection = props => {
     const { mode, onStopClick, onRecordClick, seconds, setSeconds } = props;

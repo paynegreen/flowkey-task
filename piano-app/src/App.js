@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import Piano from "./Piano";
-import SongList from "./SongList";
 import _ from "lodash";
 import SaveSongModal from "./containers/SaveSongModal";
 import { Container } from "reactstrap";
 import RecordSection from "./containers/RecordSection";
+import SongList from "./containers/SongList";
 
 const DURATION_UNIT = 200;
 const DEFAULT_NOTE_DURATION = DURATION_UNIT;

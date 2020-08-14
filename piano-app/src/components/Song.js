@@ -1,13 +1,12 @@
 import React from "react";
 import { Button } from "reactstrap";
-import formatTime from "./utils/formatTime";
+import formatTime from "../utils/formatTime";
 import { FaPlay } from "react-icons/fa";
 
 function Song(props) {
     const { replaySong, song, mode } = props;
     return (
         <tr>
-            <td></td>
             <td>
                 <Button
                     disabled={mode !== "IDLE"}

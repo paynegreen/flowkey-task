@@ -1,8 +1,8 @@
 import React from "react";
-import Song from "./Song";
 import { Query } from "react-apollo";
 import { gql } from "apollo-boost";
 import { Table } from "reactstrap";
+import Song from "../components/Song";
 
 const GET_SONGS = gql`
     {
@@ -26,7 +26,6 @@ const SongList = props => {
             <Table borderless>
                 <thead>
                     <tr>
-                        <th></th>
                         <th>Title</th>
                         <th>Length</th>
                     </tr>

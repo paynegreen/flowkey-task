@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import formatTime from "./utils/formatTime";
+import formatTime from "../utils/formatTime";
 
 const Timer = props => {
     const { seconds, setSeconds, mode } = props;
