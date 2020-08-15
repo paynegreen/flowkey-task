@@ -57,8 +57,8 @@ function App() {
 
         const playtime = _.uniq(_.flatMap(song.keyStrokes, e => [e.time, e.time + e.duration]));
 
-        scheduleEvents = _.each(playtime, t => {
-            setTimeout(() => {
+        scheduleEvents = _.map(playtime, t => {
+            return setTimeout(() => {
                 const newEvents = song.keyStrokes.filter(e => {
                     return e.time <= t && e.time + e.duration > t;
                 });
@@ -68,19 +68,8 @@ function App() {
         });
 
         setTimeout(() => {
-            stopReplay();
+            stopRecording();
         }, song.elapseTime);
-    };
-
-    const stopReplay = () => {
-        if (mode === "RECORDING" && events.length > 0) {
-            saveSong();
-        }
-        setCurrentEvents([]);
-        setMode("IDLE");
-
-        _.each(scheduleEvents, v => clearInterval(v));
-        scheduleEvents = [];
     };
 
     const stopRecording = () => {
@@ -119,7 +108,6 @@ function App() {
             <Container className="d-flex flex-column align-items-center my-5">
                 <RecordSection
                     mode={mode}
-                    setMode={setMode}
                     onRecordClick={beginRecording}
                     onStopClick={stopRecording}
                     seconds={seconds}
